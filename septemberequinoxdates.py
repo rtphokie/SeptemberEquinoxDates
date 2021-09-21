@@ -56,19 +56,22 @@ def seasons(startyear, endyear, tzstr='US/Eastern', showdeltas=False):
                     if delta < 0:
                         delta+=1
                     if showdeltas:
-                        print(f"{year} {24*(delta):12.4f}")
+                        print(f"{year} {24*(delta):12.4f} {day}")
                     deltas.append(24*delta)
                 if x == 'UTC':
                     prevval=val
                 if day not in metrics[x].keys():
-                    metrics[x][day]=0
-                metrics[x][day]+=1
+                    metrics[x][day]=[]
+                metrics[x][day].append(year)
             # print(yi, almanac.SEASON_EVENTS[yi], ti.utc_datetime().strftime('%x'), ti.utc_datetime().astimezone(tz).strftime("%x"))
     print(f"between {yearrange[0]} and {yearrange[1]} in the {tzstr} timezone")
     print(f"the September equinox arrives ~{statistics.median(deltas):.2f} hours later each year")
-    for d,c in metrics[tzstr].items():
-        print(f"{d} {c/sum(metrics[tzstr].values())*100:.2f}%")
+    for d,c in sorted(metrics[tzstr].items()):
+        print(f"{d}")
+        if len(c) < 20:
+            print(f"   {','.join(c)}")
+        # print(f"{d} {c/sum(metrics[tzstr].values())*100:.2f}%")
 
 
 if __name__ == '__main__':
-    seasons(1583, 2021, tzstr='US/Eastern')
+    seasons(1583, 2021, tzstr='US/Pacific', showdeltas=True)
